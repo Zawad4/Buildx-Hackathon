@@ -1,0 +1,37 @@
+# Environment files & secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Production build outputs
+dist/
+dist-ssr/
+build/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Python virtual environments & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+
