@@ -1,9 +1,45 @@
-# Python
+# Environment files & secrets
+.env
+.env.*
+.env.local
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Production build outputs
+dist/
+dist-ssr/
+build/
+.vite/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+
+# Editor directories
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Python virtual environments & bytecode
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+.venv/
+venv/
+ENV/
+env/
 build/
 develop-eggs/
 dist/
@@ -20,35 +56,11 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
-.venv/
-venv/
-ENV/
-env/
-
-# Environment Variables & Secrets
-.env
-*.env
-.env.local
-
 # Database
 *.db
 *.sqlite3
 vault.db
 
-# Node / Frontend
-node_modules/
-dist/
-.vite/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# IDE & OS
-.vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-
+# Backups
+.frontend_backup/
+frontend_working/
