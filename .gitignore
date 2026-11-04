@@ -1,0 +1,66 @@
+# Environment files & secrets
+.env
+.env.*
+.env.local
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Production build outputs
+dist/
+dist-ssr/
+build/
+.vite/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+
+# Editor directories
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Python virtual environments & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Database
+*.db
+*.sqlite3
+vault.db
+
+# Backups
+.frontend_backup/
+frontend_working/
