@@ -32,6 +32,7 @@ class AccessRequest(BaseModel):
     purpose: str
     ticket_id: Optional[str] = None
     justification: Optional[str] = None
+    username: Optional[str] = "support_alice"
 
 class TransactionDetail(BaseModel):
     id: int

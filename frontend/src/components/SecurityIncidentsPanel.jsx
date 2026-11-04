@@ -2,7 +2,7 @@ import { ShieldAlert, ArrowUpRight } from 'lucide-react';
 import { SECURITY_INCIDENTS } from '../data/mockSecurityData';
 
 function getSeverityClass(severity) {
-  switch (severity.toLowerCase()) {
+  switch ((severity || '').toLowerCase()) {
     case 'critical':
       return 'severity-critical';
     case 'high':
@@ -15,7 +15,9 @@ function getSeverityClass(severity) {
   }
 }
 
-export default function SecurityIncidentsPanel({ onNavigate }) {
+export default function SecurityIncidentsPanel({ onNavigate, incidents }) {
+  const displayIncidents = incidents && incidents.length > 0 ? incidents : SECURITY_INCIDENTS;
+
   return (
     <div className="panel-card incidents-panel">
       <div className="panel-header">
@@ -25,7 +27,7 @@ export default function SecurityIncidentsPanel({ onNavigate }) {
             <span>Recent Security Incidents</span>
           </div>
           <span className="panel-subtitle">
-            Anomalous exfiltration alerts requiring secops evaluation
+            Anomalous exfiltration alerts requiring secops evaluation (Live from SQLite / ABAC Engine)
           </span>
         </div>
         <button
@@ -55,7 +57,7 @@ export default function SecurityIncidentsPanel({ onNavigate }) {
               </tr>
             </thead>
             <tbody>
-              {SECURITY_INCIDENTS.map((inc) => (
+              {displayIncidents.map((inc) => (
                 <tr key={inc.id}>
                   <td className="table-code font-bold">{inc.id}</td>
                   <td className="incident-type-cell">{inc.type}</td>

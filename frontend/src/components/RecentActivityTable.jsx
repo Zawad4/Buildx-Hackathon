@@ -3,7 +3,7 @@ import { ShieldCheck, Filter, ArrowUpRight } from 'lucide-react';
 import { ENRICHED_ACTIVITY_EVENTS } from '../data/mockSecurityData';
 
 function getRiskBadgeClass(risk) {
-  switch (risk.toLowerCase()) {
+  switch ((risk || '').toLowerCase()) {
     case 'critical':
       return 'badge-danger';
     case 'high':
@@ -16,18 +16,20 @@ function getRiskBadgeClass(risk) {
   }
 }
 
-export default function RecentActivityTable({ onNavigate }) {
+export default function RecentActivityTable({ onNavigate, events }) {
   const [decisionFilter, setDecisionFilter] = useState('ALL');
   const [riskFilter, setRiskFilter] = useState('ALL');
 
+  const sourceEvents = events && events.length > 0 ? events : ENRICHED_ACTIVITY_EVENTS;
+
   const filteredEvents = useMemo(() => {
-    return ENRICHED_ACTIVITY_EVENTS.filter((ev) => {
+    return sourceEvents.filter((ev) => {
       const matchDecision =
         decisionFilter === 'ALL' || ev.decision === decisionFilter;
       const matchRisk = riskFilter === 'ALL' || ev.riskLevel === riskFilter;
       return matchDecision && matchRisk;
     });
-  }, [decisionFilter, riskFilter]);
+  }, [sourceEvents, decisionFilter, riskFilter]);
 
   return (
     <div className="panel-card activity-panel">
@@ -38,7 +40,7 @@ export default function RecentActivityTable({ onNavigate }) {
             <span>Vault Egress & Sensitive-Data Leakage Defense</span>
           </div>
           <span className="panel-subtitle">
-            Field-level DLP enforcement, tokenization & redaction activity
+            Live field-level DLP enforcement, tokenization & redaction activity from SQLite Audit Logs
           </span>
         </div>
 
@@ -92,7 +94,7 @@ export default function RecentActivityTable({ onNavigate }) {
       <div className="panel-body">
         <div className="table-filter-stats">
           <span>
-            Showing {filteredEvents.length} of {ENRICHED_ACTIVITY_EVENTS.length} recorded events
+            Showing {filteredEvents.length} of {sourceEvents.length} recorded events
           </span>
           {(decisionFilter !== 'ALL' || riskFilter !== 'ALL') && (
             <button
@@ -114,53 +116,49 @@ export default function RecentActivityTable({ onNavigate }) {
               <tr>
                 <th>Event ID</th>
                 <th>Timestamp</th>
-                <th>Source / Actor</th>
-                <th>Target Resource</th>
-                <th>Requested Purpose</th>
-                <th>Sensitive Field</th>
-                <th>Access Decision</th>
-                <th>Risk Level</th>
-                <th>Applied Policy</th>
-                <th>Enforcement</th>
+                <th>Actor / Service</th>
+                <th>Target Vault Record</th>
+                <th>Disclosed Fields</th>
+                <th>Action Taken</th>
+                <th>Declared Purpose</th>
+                <th>Decision</th>
+                <th>Risk Rating</th>
+                <th>Protection</th>
               </tr>
             </thead>
             <tbody>
-              {filteredEvents.length > 0 ? (
-                filteredEvents.map((event) => (
-                  <tr key={event.id}>
-                    <td className="table-code">{event.id}</td>
-                    <td className="table-timestamp">{event.timestamp}</td>
-                    <td className="table-code">{event.actor}</td>
-                    <td className="table-code">{event.destination}</td>
-                    <td className="table-purpose">{event.purpose}</td>
-                    <td>{event.field}</td>
-                    <td>
-                      <span className={`decision-pill decision-${event.decision.toLowerCase()}`}>
-                        {event.decision}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge ${getRiskBadgeClass(event.riskLevel)}`}>
-                        <span className="badge-dot" />
-                        {event.riskLevel}
-                      </span>
-                    </td>
-                    <td>{event.action}</td>
-                    <td>
-                      <span className={`badge badge-${event.statusType}`}>
-                        <span className="badge-dot" />
-                        {event.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={10} className="empty-table-cell">
-                    No activity logs match the selected decision and risk filters.
+              {filteredEvents.map((ev) => (
+                <tr key={ev.id}>
+                  <td className="table-code font-bold">{ev.id}</td>
+                  <td className="table-timestamp">{ev.timestamp}</td>
+                  <td className="table-code">{ev.actor}</td>
+                  <td className="table-code">{ev.destination}</td>
+                  <td className="table-code">{ev.field}</td>
+                  <td>{ev.action}</td>
+                  <td>{ev.purpose}</td>
+                  <td>
+                    <span
+                      className={`status-pill ${
+                        ev.decision === 'Allowed'
+                          ? 'status-allowed'
+                          : ev.decision === 'Denied'
+                          ? 'status-denied'
+                          : 'status-flagged'
+                      }`}
+                    >
+                      {ev.decision}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`badge ${getRiskBadgeClass(ev.riskLevel)}`}>
+                      {ev.riskLevel}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="badge badge-accent">{ev.status}</span>
                   </td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
         </div>

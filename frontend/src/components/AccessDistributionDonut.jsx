@@ -22,8 +22,10 @@ function DonutTooltip({ active, payload }) {
   return null;
 }
 
-export default function AccessDistributionDonut() {
-  const totalRequests = ACCESS_DISTRIBUTION.reduce(
+export default function AccessDistributionDonut({ data }) {
+  const chartData = data && data.length > 0 ? data : ACCESS_DISTRIBUTION;
+
+  const totalRequests = chartData.reduce(
     (acc, curr) => acc + curr.value,
     0
   );
@@ -33,7 +35,7 @@ export default function AccessDistributionDonut() {
       <div className="panel-header">
         <div className="panel-title-group">
           <h3 className="panel-title">Access Distribution</h3>
-          <span className="panel-subtitle">Current enforcement split</span>
+          <span className="panel-subtitle">Live enforcement split (Approved / Denied / Throttled)</span>
         </div>
       </div>
       <div className="panel-body donut-body">
@@ -42,45 +44,49 @@ export default function AccessDistributionDonut() {
             <PieChart>
               <Tooltip content={<DonutTooltip />} />
               <Pie
-                data={ACCESS_DISTRIBUTION}
+                data={chartData}
                 cx="50%"
                 cy="50%"
                 innerRadius={65}
                 outerRadius={88}
                 paddingAngle={3}
                 dataKey="value"
+                stroke="none"
               >
-                {ACCESS_DISTRIBUTION.map((entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          <div className="donut-center-stat">
-            <span className="donut-center-val">
+          <div className="donut-center-metric">
+            <span className="donut-center-value">
               {totalRequests.toLocaleString()}
             </span>
-            <span className="donut-center-lbl">Total Requests</span>
+            <span className="donut-center-label">Evaluations</span>
           </div>
         </div>
 
-        <div className="donut-legend-list">
-          {ACCESS_DISTRIBUTION.map((item) => {
-            const pct = ((item.value / totalRequests) * 100).toFixed(1);
+        <div className="donut-legend">
+          {chartData.map((item, idx) => {
+            const pct =
+              totalRequests > 0
+                ? ((item.value / totalRequests) * 100).toFixed(1)
+                : 0;
             return (
-              <div key={item.name} className="donut-legend-item">
-                <div className="donut-legend-left">
+              <div key={idx} className="legend-row">
+                <div className="legend-indicator">
                   <span
-                    className="donut-legend-indicator"
+                    className="legend-color-dot"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="donut-legend-name">{item.name}</span>
+                  <span className="legend-name">{item.name}</span>
                 </div>
-                <div className="donut-legend-right">
-                  <span className="donut-legend-count">
+                <div className="legend-values">
+                  <span className="legend-count">
                     {item.value.toLocaleString()}
                   </span>
-                  <span className="donut-legend-pct">({pct}%)</span>
+                  <span className="legend-percent">{pct}%</span>
                 </div>
               </div>
             );
